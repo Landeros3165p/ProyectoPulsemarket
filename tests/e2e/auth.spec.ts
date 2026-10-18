@@ -12,11 +12,11 @@ test.describe("autenticación", () => {
       page.getByRole("heading", { name: "PulseMarket" }),
     ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Continuar con Google" }),
-    ).toHaveAttribute("href", "/api/auth/signin/google");
+      page.getByRole("button", { name: "Continuar con Google" }),
+    ).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Continuar con GitHub" }),
-    ).toHaveAttribute("href", "/api/auth/signin/github");
+      page.getByRole("button", { name: "Continuar con GitHub" }),
+    ).toBeVisible();
   });
 
   test("redirige del panel al login cuando no hay sesión", async ({ page }) => {
