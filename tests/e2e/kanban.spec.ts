@@ -35,8 +35,11 @@ testWithTask("arrastra una tarea y conserva su estado después de recargar", asy
 
   const task = page.getByTestId(`task-card-${kanbanTaskId}`);
   const inProgressColumn = page.getByRole("region", { name: "En Proceso" });
+  const inProgressHeading = inProgressColumn.getByRole("heading", {
+    name: "En Proceso",
+  });
   await expect(task).toBeVisible();
-  await task.dragTo(inProgressColumn);
+  await task.dragTo(inProgressHeading);
   const movedTask = inProgressColumn.getByTestId(`task-card-${kanbanTaskId}`);
   await expect(movedTask).toBeVisible();
   await expect(movedTask.getByRole("button")).toHaveText(
