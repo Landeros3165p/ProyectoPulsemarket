@@ -1,3 +1,7 @@
+"use client";
+
+import { signIn } from "next-auth/react";
+
 export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-100 p-4">
@@ -10,18 +14,20 @@ export default function LoginPage() {
         </div>
 
         <div className="space-y-4">
-          <a
-            href="/api/auth/signin/google"
-            className="flex w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 font-medium text-slate-700 hover:bg-slate-50"
-          >
-            Continuar con Google
-          </a>
-          <a
-            href="/api/auth/signin/github"
+          <button
+            type="button"
+            onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
             className="flex w-full items-center justify-center gap-3 rounded-lg bg-slate-900 px-4 py-3 font-medium text-white hover:bg-slate-800"
           >
             Continuar con GitHub
-          </a>
+          </button>
+          <button
+            type="button"
+            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+            className="flex w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 font-medium text-slate-700 hover:bg-slate-50"
+          >
+            Continuar con Google
+          </button>
         </div>
       </section>
     </main>
