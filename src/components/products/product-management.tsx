@@ -42,15 +42,15 @@ export function ProductManagement() {
   }
 
   return (
-    <section className="mb-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <section className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+      <div className="mb-4 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <h2 className="text-lg font-semibold text-slate-900">
           Administración de productos
         </h2>
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 sm:w-auto"
         >
           Ajuste masivo de precios
         </button>

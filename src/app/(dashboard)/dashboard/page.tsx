@@ -40,7 +40,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-slate-900">
+      <h1 className="mb-6 text-2xl font-bold text-slate-900 sm:text-3xl">
         Panel de Analítica
       </h1>
       <KPICards data={kpiData} />

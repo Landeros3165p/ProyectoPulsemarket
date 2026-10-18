@@ -22,8 +22,13 @@ export function ProductTable({
   totalPages,
 }: ProductTableProps) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-      <table className="w-full text-left text-sm text-slate-600">
+    <div
+      aria-label="Tabla de productos"
+      className="max-w-full overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm"
+      role="region"
+      tabIndex={0}
+    >
+      <table className="w-full min-w-[42rem] text-left text-sm text-slate-600">
         <thead className="bg-slate-50 text-xs uppercase text-slate-700">
           <tr>
             <th scope="col" className="px-6 py-3">
@@ -58,7 +63,7 @@ export function ProductTable({
         </tbody>
       </table>
 
-      <div className="flex items-center justify-between border-t border-slate-200 px-6 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-4 py-3 sm:px-6">
         <span className="text-xs text-slate-500">
           Página {currentPage} de {totalPages}
         </span>

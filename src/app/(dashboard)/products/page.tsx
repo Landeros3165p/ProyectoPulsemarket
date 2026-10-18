@@ -19,7 +19,7 @@ export default async function ProductsPage({
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-slate-900">
+      <h1 className="mb-6 text-2xl font-bold text-slate-900 sm:text-3xl">
         Catálogo de Productos
       </h1>
       <ProductManagement />

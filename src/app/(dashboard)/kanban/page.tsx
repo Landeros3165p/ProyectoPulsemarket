@@ -20,7 +20,9 @@ export default async function KanbanPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-slate-900">Gestor Kanban</h1>
+      <h1 className="mb-6 text-2xl font-bold text-slate-900 sm:text-3xl">
+        Gestor Kanban
+      </h1>
       <KanbanBoard initialTasks={tasks} />
     </div>
   );

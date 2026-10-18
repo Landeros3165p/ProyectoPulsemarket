@@ -71,7 +71,7 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
           {errorMessage}
         </p>
       )}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 sm:gap-6">
         {columns.map((column) => (
           <section
             key={column.status}
@@ -103,7 +103,7 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
                     }}
                     className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm"
                   >
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="break-words text-sm font-medium text-slate-900">
                       {task.title}
                     </p>
                     {column.status !== "completed" && (

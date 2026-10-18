@@ -30,7 +30,9 @@ export function KPICards({ data, isLoading = false }: KPICardsProps) {
           className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
         >
           <h2 className="text-sm font-medium text-slate-500">{kpi.title}</h2>
-          <p className="mt-2 text-3xl font-bold text-slate-900">{kpi.value}</p>
+          <p className="mt-2 break-words text-2xl font-bold text-slate-900 sm:text-3xl">
+            {kpi.value}
+          </p>
           <span className="mt-2 inline-block text-xs font-semibold text-emerald-600">
             {kpi.change} vs. mes anterior
           </span>
