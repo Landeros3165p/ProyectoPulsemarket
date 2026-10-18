@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { LogoutButton } from "@/components/auth/logout-button";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
@@ -8,7 +9,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <h2 className="text-xl font-bold text-slate-900">PulseMarket</h2>
         <nav aria-label="Navegación principal" className="mt-8 space-y-2">
           <Link
-            href="/"
+            href="/dashboard"
             className="block rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-900"
           >
             Métricas
@@ -26,6 +27,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             Productos
           </Link>
         </nav>
+        <LogoutButton />
       </aside>
 
       <main className="min-w-0 flex-1 bg-slate-50 p-8">{children}</main>
