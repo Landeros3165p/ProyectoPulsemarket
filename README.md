@@ -75,6 +75,13 @@ entorno y Chromium instalado con `npx playwright install chromium`.
 
    Para verificar la compilación local, ejecuta `npm run build`.
 
+En el plan Hobby, `vercel.json` programa una solicitud diaria a `/api/health`,
+la frecuencia máxima permitida por Vercel en ese plan. El endpoint confirma que
+la aplicación responde; no mantiene las funciones serverless encendidas ni
+evita los *cold starts*. La sesión JWT de NextAuth tiene una duración máxima de
+cuatro días; asegúrate de conservar el mismo `NEXTAUTH_SECRET` en Vercel para
+que las sesiones existentes sigan siendo válidas entre despliegues.
+
 El workflow de GitHub Actions valida tipos, pruebas, base temporal PostgreSQL,
 E2E y build; no publica en Vercel. El despliegue automático requiere configurar
 por separado la integración de Vercel y sus secretos en el proyecto.
