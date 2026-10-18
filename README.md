@@ -6,37 +6,78 @@ tablero Kanban persistente y catálogo paginado con acciones de servidor.
 
 ## Desarrollo local
 
+En PowerShell, crea el archivo local de variables:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+En macOS/Linux, usa `cp .env.example .env.local`. Edita `.env.local` y reemplaza
+los valores de ejemplo. En Supabase, copia la cadena PostgreSQL desde la sección
+**Connect** del proyecto; usa una cadena compatible con Prisma y codifica los
+caracteres especiales de la contraseña para URL. No guardes `.env.local` en Git
+ni compartas sus valores.
+
+Genera un secreto para NextAuth con Node.js:
+
 ```bash
-npm install
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+Pega el resultado en `NEXTAUTH_SECRET`. Para desarrollo local, configura
+`NEXTAUTH_URL=http://localhost:3000`.
+
+```bash
+npm ci
 npm run dev
 ```
 
-Abre [http://localhost:3000](http://localhost:3000). Para generar la versión de
-producción ejecuta `npm run build` y luego `npm start`.
+Abre [http://localhost:3000](http://localhost:3000). Configura en Google y
+GitHub las URL de callback local
+`http://localhost:3000/api/auth/callback/google` y
+`http://localhost:3000/api/auth/callback/github`, y agrega sus credenciales
+OAuth a `.env.local`.
 
-Configura `.env.local` con los valores de `.env.example`, reemplazando la URL de
-PostgreSQL, el secreto de NextAuth y las credenciales OAuth de Google y GitHub.
-Después prepara la base de datos y los datos de ejemplo:
+Después prepara el esquema y los datos de ejemplo en una base de desarrollo o
+staging:
 
 ```bash
 npm run db:generate
 npm run db:push
 npm run db:seed
 npm run test:unit
-npm run test:e2e
 ```
 
 El seed inserta hasta 10,515 registros de ejemplo y se puede volver a ejecutar:
 usa identificadores dedicados y no elimina datos existentes. No ejecutes `db:push`
-contra una base de datos compartida sin revisar primero los cambios de esquema.
-Las pruebas E2E requieren una base de datos preparada y Chromium instalado con
-`npx playwright install chromium`.
-Las pruebas E2E requieren una base de datos preparada y Chromium instalado con
-`npx playwright install chromium`.
+contra producción o una base compartida sin revisar primero los cambios de
+esquema. Las pruebas E2E requieren una base de datos preparada, las variables de
+entorno y Chromium instalado con `npx playwright install chromium`.
 
-GitHub Actions ejecuta la comprobación de tipos, pruebas unitarias, pruebas E2E
-con PostgreSQL y la compilación. El despliegue a producción debe configurarse por
-separado con un proveedor y credenciales de despliegue.
+## Despliegue en Vercel
+
+1. Configura en Google y GitHub las URL de callback de producción:
+   `https://<tu-dominio>/api/auth/callback/google` y
+   `https://<tu-dominio>/api/auth/callback/github`.
+2. Importa este repositorio en Vercel con la raíz del proyecto en la raíz del
+   repositorio.
+3. En las variables de entorno del proyecto Vercel, configura
+   `DATABASE_URL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL` (la URL HTTPS de producción),
+   `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GITHUB_CLIENT_ID` y
+   `GITHUB_CLIENT_SECRET`. Usa los secretos reales solo en los paneles de
+   Supabase, Vercel y los proveedores OAuth; no los añadas al repositorio ni al
+   chat.
+4. Despliega desde el panel de Vercel o con la CLI autenticada:
+
+   ```bash
+   npx vercel --prod
+   ```
+
+   Para verificar la compilación local, ejecuta `npm run build`.
+
+El workflow de GitHub Actions valida tipos, pruebas, base temporal PostgreSQL,
+E2E y build; no publica en Vercel. El despliegue automático requiere configurar
+por separado la integración de Vercel y sus secretos en el proyecto.
 
 ## Estructura
 
