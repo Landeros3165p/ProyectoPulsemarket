@@ -3,21 +3,11 @@ name: PulseMarket CI
 on:
   push:
     branches: [main]
-    paths:
-      - "ProyectoPulse/**"
-      - ".github/workflows/ci-cd.yml"
   pull_request:
     branches: [main]
-    paths:
-      - "ProyectoPulse/**"
-      - ".github/workflows/ci-cd.yml"
 
 permissions:
   contents: read
-
-defaults:
-  run:
-    working-directory: ProyectoPulse
 
 jobs:
   test-and-build:
@@ -53,7 +43,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: ProyectoPulse/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
