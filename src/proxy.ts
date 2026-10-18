@@ -1,7 +1,7 @@
 import { getToken } from "next-auth/jwt";
 import { NextResponse, type NextRequest } from "next/server";
 
-const protectedRoutes = ["/", "/kanban", "/products"];
+const protectedRoutes = ["/", "/dashboard", "/kanban", "/products"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -30,12 +30,12 @@ export async function proxy(request: NextRequest) {
   }
 
   if (token && isLoginRoute) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/login", "/kanban/:path*", "/products/:path*"],
+  matcher: ["/", "/login", "/dashboard/:path*", "/kanban/:path*", "/products/:path*"],
 };

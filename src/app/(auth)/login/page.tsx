@@ -16,14 +16,18 @@ export default function LoginPage() {
         <div className="space-y-4">
           <button
             type="button"
-            onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+            onClick={() =>
+              signIn("github", { callbackUrl: "/dashboard", redirect: true })
+            }
             className="flex w-full items-center justify-center gap-3 rounded-lg bg-slate-900 px-4 py-3 font-medium text-white hover:bg-slate-800"
           >
             Continuar con GitHub
           </button>
           <button
             type="button"
-            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+            onClick={() =>
+              signIn("google", { callbackUrl: "/dashboard", redirect: true })
+            }
             className="flex w-full items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-3 font-medium text-slate-700 hover:bg-slate-50"
           >
             Continuar con Google
