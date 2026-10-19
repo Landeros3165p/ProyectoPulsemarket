@@ -4,13 +4,12 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createProduct } from "@/app/(dashboard)/products/actions";
 import { BulkUpdateModal } from "@/components/products/bulk-update-modal";
+import { showErrorAlert, showToast } from "@/lib/alerts";
 
 export function ProductManagement() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -18,8 +17,6 @@ export function ProductManagement() {
     const formData = new FormData(form);
 
     setIsSubmitting(true);
-    setMessage(null);
-    setErrorMessage(null);
 
     try {
       await createProduct({
@@ -30,11 +27,12 @@ export function ProductManagement() {
         sku: String(formData.get("sku")),
       });
       form.reset();
-      setMessage("Producto creado correctamente.");
+      showToast("success", "Producto creado correctamente");
       router.refresh();
     } catch {
-      setErrorMessage(
-        "No se pudo crear el producto. Comprueba que el SKU sea único y que los datos sean válidos.",
+      showErrorAlert(
+        "No se pudo crear el producto",
+        "Comprueba que el SKU sea único y que los datos sean válidos.",
       );
     } finally {
       setIsSubmitting(false);
@@ -129,17 +127,6 @@ export function ProductManagement() {
           </button>
         </div>
       </form>
-
-      {message && (
-        <p role="status" className="mt-3 text-sm text-emerald-700">
-          {message}
-        </p>
-      )}
-      {errorMessage && (
-        <p role="alert" className="mt-3 text-sm text-red-700">
-          {errorMessage}
-        </p>
-      )}
 
       <BulkUpdateModal
         isOpen={isModalOpen}

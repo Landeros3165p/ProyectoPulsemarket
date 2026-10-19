@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { bulkUpdateCategoryPrice } from "@/app/(dashboard)/products/actions";
+import { showErrorAlert, showToast } from "@/lib/alerts";
 
 interface BulkUpdateModalProps {
   isOpen: boolean;
@@ -16,25 +17,30 @@ export function BulkUpdateModal({ isOpen, onClose }: BulkUpdateModalProps) {
   const [category, setCategory] = useState(categories[0]);
   const [percentage, setPercentage] = useState("10");
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
-    setErrorMessage(null);
 
     try {
-      await bulkUpdateCategoryPrice({
+      const result = await bulkUpdateCategoryPrice({
         category,
         percentageAdjustment: Number(percentage),
       });
       router.refresh();
       onClose();
+      showToast(
+        result.count > 0 ? "success" : "info",
+        result.count > 0
+          ? `Se actualizaron ${result.count} productos`
+          : "No hay productos en esa categoría",
+      );
     } catch {
-      setErrorMessage(
-        "No se pudieron actualizar los precios. Revisa los datos e inténtalo de nuevo.",
+      showErrorAlert(
+        "No se pudieron actualizar los precios",
+        "Revisa los datos e inténtalo de nuevo.",
       );
     } finally {
       setLoading(false);
@@ -105,12 +111,6 @@ export function BulkUpdateModal({ isOpen, onClose }: BulkUpdateModalProps) {
               className="mt-1 w-full rounded-lg border border-slate-300 p-2 text-sm"
             />
           </div>
-
-          {errorMessage && (
-            <p role="alert" className="text-sm text-red-700">
-              {errorMessage}
-            </p>
-          )}
 
           <div className="flex justify-end gap-3 pt-4">
             <button

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { updateTaskStatus } from "@/app/(dashboard)/kanban/actions";
+import { showToast } from "@/lib/alerts";
 
 export interface Task {
   id: string;
@@ -28,7 +29,6 @@ const databaseStatus: Record<Task["status"], "PENDING" | "IN_PROGRESS" | "COMPLE
 export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [pendingTaskId, setPendingTaskId] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleStatusChange = async (
     taskId: string,
@@ -38,7 +38,6 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
     if (!previousTask) return;
 
     const newPosition = tasks.filter((task) => task.status === newStatus).length;
-    setErrorMessage(null);
     setPendingTaskId(taskId);
     setTasks((currentTasks) =>
       currentTasks.map((task) =>
@@ -58,7 +57,7 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
           task.id === taskId ? previousTask : task,
         ),
       );
-      setErrorMessage("No se pudo guardar el cambio. Inténtalo de nuevo.");
+      showToast("error", "No se pudo guardar el cambio. Inténtalo de nuevo.");
     } finally {
       setPendingTaskId(null);
     }
@@ -66,11 +65,6 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
 
   return (
     <>
-      {errorMessage && (
-        <p role="alert" className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
-          {errorMessage}
-        </p>
-      )}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 sm:gap-6">
         {columns.map((column) => (
           <section

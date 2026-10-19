@@ -1,8 +1,28 @@
 "use client";
 
+import { useEffect } from "react";
 import { signIn } from "next-auth/react";
+import { showErrorAlert } from "@/lib/alerts";
 
 export default function LoginPage() {
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const error = url.searchParams.get("error");
+
+    if (!error) return;
+
+    showErrorAlert(
+      "No se pudo iniciar sesión",
+      "La autenticación no pudo completarse. Revisa la configuración OAuth y vuelve a intentarlo.",
+    );
+    url.searchParams.delete("error");
+    window.history.replaceState(
+      null,
+      "",
+      `${url.pathname}${url.search}${url.hash}`,
+    );
+  }, []);
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-100 p-4">
       <section className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
