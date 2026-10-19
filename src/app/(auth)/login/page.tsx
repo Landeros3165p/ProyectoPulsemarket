@@ -179,7 +179,7 @@ export default function LoginPage() {
           </div>
 
           <p className="mt-6 text-center text-xs leading-5 text-slate-400">
-            Acceso seguro mediante inicio de sesión con tu cuenta.
+            Acceso seguro mediante Google o GitHub.
           </p>
         </div>
       </section>
