@@ -90,7 +90,13 @@ async function getRangeAnalytics(days: RangeDays) {
   const since = new Date(today);
   since.setUTCDate(since.getUTCDate() - (days - 1));
 
-  const [dailyRows, categoryRows, topProducts, lowStock] = await Promise.all([
+  const [
+    dailyRows,
+    categoryRows,
+    topProducts,
+    lowStock,
+    lowStockCount,
+  ] = await Promise.all([
     db.$queryRaw<DailyPoint[]>(Prisma.sql`
       SELECT date_trunc('day', "createdAt" AT TIME ZONE 'UTC') AS day,
              COALESCE(SUM(amount), 0)::float8 AS total,
@@ -127,6 +133,9 @@ async function getRangeAnalytics(days: RangeDays) {
       take: 5,
       select: { id: true, name: true, sku: true, stock: true },
     }),
+    db.product.count({
+      where: { deletedAt: null, stock: { lt: 10 } },
+    }),
   ]);
 
   const totalsByDay = new Map(
@@ -156,6 +165,7 @@ async function getRangeAnalytics(days: RangeDays) {
       units: Number(row.units),
     })),
     lowStock,
+    lowStockCount,
   };
 }
 
@@ -412,7 +422,9 @@ function Panel({
 }
 
 async function AnalyticsSection({ days }: { days: RangeDays }) {
-  const { daily, categories, topProducts, lowStock } = await getRangeAnalytics(days);
+  const { daily, categories, topProducts, lowStock, lowStockCount } =
+    await getRangeAnalytics(days);
+  const hasOutOfStock = lowStock.some((product) => product.stock === 0);
 
   return (
     <>
@@ -485,33 +497,145 @@ async function AnalyticsSection({ days }: { days: RangeDays }) {
           )}
         </Panel>
 
-        <Panel title="Alertas de inventario" description="Productos con menos de 10 unidades">
+        <Panel
+          title="Alertas de inventario"
+          description="Productos con menos de 10 unidades"
+          action={
+            <Link
+              href="/products"
+              className="text-sm font-semibold text-indigo-600 transition hover:text-violet-700"
+            >
+              Ver catálogo →
+            </Link>
+          }
+        >
           {lowStock.length === 0 ? (
             <EmptyState message="Todo el inventario está en niveles saludables." />
           ) : (
-            <ul className="space-y-3">
-              {lowStock.map((product) => (
-                <li
-                  key={product.id}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-slate-100 p-3"
+            <div className="space-y-4">
+              <div
+                role="status"
+                className={cn(
+                  "flex items-center gap-3 rounded-xl border px-3.5 py-3",
+                  hasOutOfStock
+                    ? "border-rose-200 bg-rose-50/80"
+                    : "border-amber-200 bg-amber-50/80",
+                )}
+              >
+                <span
+                  className={cn(
+                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl",
+                    hasOutOfStock
+                      ? "bg-rose-100 text-rose-700"
+                      : "bg-amber-100 text-amber-700",
+                  )}
                 >
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-slate-900">{product.name}</p>
-                    <p className="text-xs text-slate-500">{product.sku}</p>
-                  </div>
-                  <span
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-5 w-5"
+                  >
+                    <path d="m10.3 3.9-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3.1l-8-14a2 2 0 0 0-3.4 0Z" />
+                    <path d="M12 9v4m0 4h.01" />
+                  </svg>
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p
                     className={cn(
-                      "shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold",
-                      product.stock === 0
-                        ? "bg-rose-50 text-rose-700"
-                        : "bg-amber-50 text-amber-700",
+                      "text-sm font-semibold",
+                      hasOutOfStock ? "text-rose-900" : "text-amber-900",
                     )}
                   >
-                    {product.stock === 0 ? "Agotado" : `${product.stock} uds.`}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                    {hasOutOfStock
+                      ? "Hay productos agotados o por agotarse"
+                      : "Hay productos con stock bajo"}
+                  </p>
+                  <p className="mt-0.5 text-xs text-slate-600">
+                    {numberFormatter.format(lowStockCount)}{" "}
+                    {lowStockCount === 1
+                      ? "producto requiere"
+                      : "productos requieren"}{" "}
+                    atención
+                  </p>
+                </div>
+                <span
+                  className={cn(
+                    "rounded-full px-2.5 py-1 text-xs font-bold tabular-nums",
+                    hasOutOfStock
+                      ? "bg-rose-100 text-rose-800"
+                      : "bg-amber-100 text-amber-800",
+                  )}
+                >
+                  {numberFormatter.format(lowStockCount)}
+                </span>
+              </div>
+
+              <ul className="space-y-2.5">
+                {lowStock.map((product) => (
+                  <li
+                    key={product.id}
+                    className={cn(
+                      "flex items-center justify-between gap-3 rounded-xl border p-3 transition-colors",
+                      product.stock === 0
+                        ? "border-rose-100 bg-rose-50/40 hover:bg-rose-50"
+                        : "border-slate-100 bg-white hover:border-amber-100 hover:bg-amber-50/30",
+                    )}
+                  >
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span
+                        className={cn(
+                          "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+                          product.stock === 0
+                            ? "bg-rose-100 text-rose-700"
+                            : "bg-amber-50 text-amber-700",
+                        )}
+                      >
+                        <svg
+                          aria-hidden="true"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4"
+                        >
+                          <path d="m21 8-9-5-9 5v8l9 5 9-5V8Z" />
+                          <path d="m3 8 9 5 9-5m-9 5v8" />
+                        </svg>
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-slate-900">
+                          {product.name}
+                        </p>
+                        <p className="text-xs text-slate-500">{product.sku}</p>
+                      </div>
+                    </div>
+                    <span
+                      className={cn(
+                        "shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold",
+                        product.stock === 0
+                          ? "bg-rose-100 text-rose-800"
+                          : "bg-amber-100 text-amber-800",
+                      )}
+                    >
+                      {product.stock === 0 ? "Agotado" : `${product.stock} uds.`}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {lowStockCount > lowStock.length && (
+                <p className="text-center text-xs text-slate-500">
+                  Mostrando los {lowStock.length} productos más urgentes de{" "}
+                  {numberFormatter.format(lowStockCount)} alertas.
+                </p>
+              )}
+            </div>
           )}
         </Panel>
       </div>
