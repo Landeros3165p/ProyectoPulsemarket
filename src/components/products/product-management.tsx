@@ -6,6 +6,7 @@ import { createProduct } from "@/app/(dashboard)/products/actions";
 import { BulkUpdateModal } from "@/components/products/bulk-update-modal";
 import { productSchema } from "@/lib/validators/schemas";
 import { cn } from "@/lib/utils";
+import { showErrorAlert, showToast } from "@/lib/alerts";
 
 type ProductField = "name" | "category" | "price" | "stock" | "sku";
 type FieldErrors = Partial<Record<ProductField, string>>;
@@ -103,6 +104,11 @@ export function ProductManagement({ categories = defaultCategories }: ProductMan
       }
       setFieldErrors(errors);
       const firstInvalid = productFields.find((field) => errors[field]);
+      setErrorMessage("Corrige los campos marcados antes de continuar.");
+      showErrorAlert(
+        "Revisa los datos del producto",
+        firstInvalid ? errors[firstInvalid] : "Verifica los campos e inténtalo de nuevo.",
+      );
       if (firstInvalid) {
         const element = form.elements.namedItem(firstInvalid);
         if (element instanceof HTMLElement) element.focus();
@@ -117,10 +123,13 @@ export function ProductManagement({ categories = defaultCategories }: ProductMan
       await createProduct(result.data);
       form.reset();
       setMessage("Producto creado correctamente.");
+      showToast("success", "Producto creado correctamente");
       router.refresh();
     } catch {
-      setErrorMessage(
-        "No se pudo crear el producto. Comprueba que el SKU sea único y que los datos sean válidos.",
+      setErrorMessage("No se pudo crear el producto. Revisa que el SKU sea único.");
+      showErrorAlert(
+        "No se pudo crear el producto",
+        "Comprueba que el SKU sea único y que los datos sean válidos.",
       );
     } finally {
       setIsSubmitting(false);

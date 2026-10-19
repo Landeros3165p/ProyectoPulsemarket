@@ -280,9 +280,12 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
                       }}
                       className={cn(
                         "group relative rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-200",
-                        isPending ? "cursor-progress" : "cursor-grab hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md active:cursor-grabbing",
+                        isPending
+                          ? "cursor-progress"
+                          : "cursor-grab hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md active:cursor-grabbing",
                         draggingTaskId === task.id && "rotate-1 scale-[0.98] opacity-40",
-                        recentlyMovedId === task.id && "animate-scale-in ring-2 ring-indigo-400/60",
+                        recentlyMovedId === task.id &&
+                          "animate-scale-in ring-2 ring-indigo-400/60",
                       )}
                     >
                       {isPending && (
@@ -346,6 +349,7 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
         })}
       </div>
 
+      {/* Toast de errores de sincronización */}
       <div className="pointer-events-none fixed bottom-4 right-4 z-50 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-2">
         {toasts.map((toast) => (
           <div

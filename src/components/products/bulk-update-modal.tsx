@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { bulkUpdateCategoryPrice } from "@/app/(dashboard)/products/actions";
 import { bulkUpdateCategorySchema } from "@/lib/validators/schemas";
 import { cn, formatCurrency } from "@/lib/utils";
+import { showErrorAlert, showToast } from "@/lib/alerts";
 
 interface BulkUpdateModalProps {
   isOpen: boolean;
@@ -76,6 +77,13 @@ export function BulkUpdateModal({
         }
       }
       setFieldErrors(errors);
+      setErrorMessage(
+        errors.percentageAdjustment ?? errors.category ?? "Verifica los datos ingresados.",
+      );
+      showErrorAlert(
+        "Revisa el ajuste de precios",
+        errors.percentageAdjustment ?? errors.category ?? "Verifica los datos ingresados.",
+      );
       return;
     }
 
@@ -91,9 +99,16 @@ export function BulkUpdateModal({
       });
       router.refresh();
       onClose();
+      showToast(
+        response.count > 0 ? "success" : "info",
+        response.count > 0
+          ? `Se actualizaron ${response.count} productos`
+          : "No hay productos en esa categoría",
+      );
     } catch {
-      setErrorMessage(
-        "No se pudieron actualizar los precios. Revisa los datos e inténtalo de nuevo.",
+      showErrorAlert(
+        "No se pudieron actualizar los precios",
+        "Revisa los datos e inténtalo de nuevo.",
       );
     } finally {
       setLoading(false);

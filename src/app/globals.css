@@ -1,3 +1,5 @@
+@import "sweetalert2/dist/sweetalert2.min.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -163,4 +165,71 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+.login-brand-panel {
+  background:
+    radial-gradient(ellipse at 85% 12%, rgb(216 180 254 / 35%), transparent 33%),
+    radial-gradient(ellipse at 0% 90%, rgb(192 38 211 / 45%), transparent 45%),
+    linear-gradient(140deg, #5145e5 0%, #7738e5 54%, #a328d5 100%);
+}
+
+.login-grid-overlay {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 5%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 5%) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to bottom, black, transparent 95%);
+}
+
+/* ── SweetAlert2 custom theme ── */
+.pulse-swal-popup {
+  border-radius: 1rem;
+  padding: 1.75rem;
+}
+
+.pulse-swal-title {
+  color: #1e1b4b;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.pulse-swal-content {
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.pulse-swal-confirm {
+  border: 0;
+  border-radius: 0.625rem;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.7rem 1.25rem;
+}
+
+.pulse-swal-confirm:hover {
+  background: linear-gradient(135deg, #4338ca, #6d28d9);
+}
+
+.pulse-swal-cancel {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.625rem;
+  background: white;
+  color: #475569;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.7rem 1.25rem;
+  margin-right: 0.5rem;
+}
+
+.pulse-swal-cancel:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.pulse-swal-toast {
+  border: 1px solid #e0e7ff;
+  border-radius: 0.875rem;
 }

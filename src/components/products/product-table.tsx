@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { softDeleteProduct } from "@/app/(dashboard)/products/actions";
+import { showErrorAlert, showToast } from "@/lib/alerts";
 import { cn, formatCurrency } from "@/lib/utils";
 
 export interface Product {
@@ -182,6 +183,7 @@ export function ProductTable({
     try {
       await softDeleteProduct(product.id);
       setNotice(`"${product.name}" se retiró del catálogo.`);
+      showToast("success", `"${product.name}" eliminado del catálogo`);
       startTransition(() => router.refresh());
     } catch {
       setHiddenIds((current) => {
@@ -189,7 +191,12 @@ export function ProductTable({
         next.delete(product.id);
         return next;
       });
-      setErrorMessage(`No se pudo eliminar "${product.name}". Inténtalo de nuevo.`);
+      const errorMsg = `No se pudo eliminar "${product.name}". Inténtalo de nuevo.`;
+      setErrorMessage(errorMsg);
+      showErrorAlert(
+        "Error al eliminar producto",
+        `No fue posible retirar "${product.name}" del catálogo. Revisa tu conexión e inténtalo de nuevo.`,
+      );
     } finally {
       setDeletingId(null);
     }
