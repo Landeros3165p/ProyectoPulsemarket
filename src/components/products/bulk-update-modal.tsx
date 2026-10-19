@@ -49,7 +49,7 @@ export function BulkUpdateModal({ isOpen, onClose }: BulkUpdateModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !loading) onClose();
       }}
@@ -57,24 +57,50 @@ export function BulkUpdateModal({ isOpen, onClose }: BulkUpdateModalProps) {
       <section
         aria-labelledby="bulk-update-title"
         aria-modal="true"
-        className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-xl bg-white p-4 shadow-xl sm:p-6"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl sm:p-6"
         role="dialog"
       >
-        <h2
-          id="bulk-update-title"
-          className="text-xl font-bold text-slate-900"
-        >
-          Ajuste Masivo de Precios
-        </h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Modifica simultáneamente el precio de los productos de una categoría.
-        </p>
+        <header className="flex items-start gap-3 border-b border-slate-100 pb-4">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-lg font-bold text-indigo-600">
+            %
+          </span>
+          <div className="min-w-0 flex-1">
+            <h2
+              id="bulk-update-title"
+              className="text-lg font-extrabold tracking-tight text-slate-900"
+            >
+              Ajuste Masivo de Precios
+            </h2>
+            <p className="mt-1 text-xs leading-5 text-slate-500">
+              Modifica simultáneamente el precio de los productos de una
+              categoría.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={loading}
+            aria-label="Cerrar ventana"
+            className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="h-4 w-4"
+            >
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </header>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
           <div>
             <label
               htmlFor="bulk-category"
-              className="block text-sm font-medium text-slate-700"
+              className="block text-xs font-semibold text-slate-600"
             >
               Categoría
             </label>
@@ -82,7 +108,7 @@ export function BulkUpdateModal({ isOpen, onClose }: BulkUpdateModalProps) {
               id="bulk-category"
               value={category}
               onChange={(event) => setCategory(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 p-2 text-sm"
+              className="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50"
             >
               {categories.map((item) => (
                 <option key={item} value={item}>
@@ -95,7 +121,7 @@ export function BulkUpdateModal({ isOpen, onClose }: BulkUpdateModalProps) {
           <div>
             <label
               htmlFor="bulk-percentage"
-              className="block text-sm font-medium text-slate-700"
+              className="block text-xs font-semibold text-slate-600"
             >
               Ajuste porcentual (%)
             </label>
@@ -108,23 +134,23 @@ export function BulkUpdateModal({ isOpen, onClose }: BulkUpdateModalProps) {
               required
               value={percentage}
               onChange={(event) => setPercentage(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 p-2 text-sm"
+              className="mt-1.5 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-2 border-t border-slate-100 pt-4">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-50"
+              className="rounded-lg border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-lg bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? "Aplicando..." : "Aplicar Cambios"}
             </button>
