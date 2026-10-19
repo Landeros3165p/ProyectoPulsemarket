@@ -30,6 +30,35 @@ describe("validaciones Zod", () => {
     ).toBe(false);
   });
 
+  it("rechaza nombres de producto compuestos solo por números", () => {
+    const result = productSchema.safeParse({
+      name: "123456",
+      category: "Electrónica",
+      price: 10,
+      stock: 1,
+      sku: "ABC",
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toContain(
+        "debe incluir al menos una letra",
+      );
+    }
+  });
+
+  it("acepta nombres de producto con letras, números y tildes", () => {
+    expect(
+      productSchema.safeParse({
+        name: "Cámara 4K edición básica",
+        category: "Electrónica",
+        price: 350,
+        stock: 15,
+        sku: "CAM-4K-01",
+      }).success,
+    ).toBe(true);
+  });
+
   it("rechaza categorías vacías", () => {
     expect(
       productSchema.safeParse({

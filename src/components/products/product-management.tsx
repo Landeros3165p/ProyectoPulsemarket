@@ -6,7 +6,7 @@ import { createProduct } from "@/app/(dashboard)/products/actions";
 import { BulkUpdateModal } from "@/components/products/bulk-update-modal";
 import { productSchema } from "@/lib/validators/schemas";
 import { cn } from "@/lib/utils";
-import { showErrorAlert, showToast } from "@/lib/alerts";
+import { showErrorAlert, showToast, showWarningAlert } from "@/lib/alerts";
 
 type ProductField = "name" | "category" | "price" | "stock" | "sku";
 type FieldErrors = Partial<Record<ProductField, string>>;
@@ -105,7 +105,7 @@ export function ProductManagement({ categories = defaultCategories }: ProductMan
       setFieldErrors(errors);
       const firstInvalid = productFields.find((field) => errors[field]);
       setErrorMessage("Corrige los campos marcados antes de continuar.");
-      showErrorAlert(
+      showWarningAlert(
         "Revisa los datos del producto",
         firstInvalid ? errors[firstInvalid] : "Verifica los campos e inténtalo de nuevo.",
       );

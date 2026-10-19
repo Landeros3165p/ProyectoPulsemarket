@@ -2,10 +2,10 @@ import { z } from "zod";
 
 /**
  * Nombre: permite letras, números, tildes y símbolos comunes de producto.
- * Debe comenzar con letra o número. Máx. 120 caracteres.
+ * Debe incluir al menos una letra. Máx. 120 caracteres.
  */
 const productNamePattern =
-  /^[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N}\p{Zs}''"".,&()\/:+#%\-]{1,119}$/u;
+  /^(?=.*\p{L})[\p{L}\p{M}\p{N}][\p{L}\p{M}\p{N}\p{Zs}''"".,&()\/:+#%\-]{1,119}$/u;
 
 /**
  * Categoría: letras, números, espacios y algunos separadores. Máx. 50 caracteres.
@@ -28,7 +28,7 @@ export const productSchema = z.object({
     .max(120, "El nombre no puede exceder 120 caracteres.")
     .regex(
       productNamePattern,
-      "El nombre solo puede contener letras, números y los símbolos: . , & ( ) / : + # % - '",
+      "El nombre debe incluir al menos una letra y solo puede contener letras, números y los símbolos: . , & ( ) / : + # % - '",
     ),
   category: z
     .string()
